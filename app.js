@@ -21,7 +21,7 @@ app.use(express.json());
 
 app.use('/users', userRouter);
 app.use('/aliens', alienRouter);
-app.use('/aboutInfo', aboutInfoRouter);
+app.use('/aboutinfo', aboutInfoRouter);
 
 app.listen(port, () => {
   console.log('Server listening on port: ' + port);
