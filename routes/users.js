@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/userModel');
+const AboutInfo = require('../models/aboutInfoModel');
 const mongoose = require('mongoose');
 const randomString = require('../utils/randomString');
 
@@ -120,9 +121,17 @@ router.patch('/update/', async (req, res) => {
         searchUser.login == req.body.login &&
         searchUser.password == req.body.password
       ) {
+        const userPage = await AboutInfo.findOne({ userLogin: req.body.login });
+
         searchUser.login = req.body.newLogin || req.body.login;
         searchUser.password == req.body.newPassword || req.body.password;
+
         await searchUser.save();
+
+        if (userPage != null) {
+          userPage.userLogin = req.body.newLogin || req.body.login;
+          await userPage.save();
+        }
 
         return res.json({ status: true, searchUser });
       } else {

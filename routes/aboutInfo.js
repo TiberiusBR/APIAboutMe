@@ -1,24 +1,24 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const AboutInfo = require("../models/aboutInfoModel");
-const User = require("../models/userModel");
-const mongoose = require("mongoose");
+const AboutInfo = require('../models/aboutInfoModel');
+const User = require('../models/userModel');
+const mongoose = require('mongoose');
 
 //DEBUG
-router.get("/", async (req, res) => {
-  console.log("Retrieving All Info...");
+router.get('/', async (req, res) => {
+  console.log('Retrieving All Info...');
   try {
     const info = await AboutInfo.find();
     res.json(info);
   } catch (err) {
-    res.send("Error " + err);
+    res.send('Error ' + err);
   }
 });
 //DEBUG
 
 //Procurar uma página pelo login do usuário.
-router.get("/search/:userlogin", async (req, res) => {
-  console.log("Retrieving a Page...");
+router.get('/search/:userlogin', async (req, res) => {
+  console.log('Retrieving a Page...');
   try {
     const login = req.params.userlogin;
     const info = await AboutInfo.findOne({ userLogin: login });
@@ -26,50 +26,54 @@ router.get("/search/:userlogin", async (req, res) => {
     if (info != null) {
       return res.json({ status: true, info: info });
     } else {
-      return res.json({ status: false, message: "Página não encontrada." });
+      return res.json({ status: false, message: 'Página não encontrada.' });
     }
   } catch (err) {
-    res.send("Error - " + err);
+    res.send('Error - ' + err);
   }
 });
 
 //Cria uma página passando os parametros
-router.post("/create", async (req, res) => {
-  console.log("Creating a AboutInfo...");
+router.post('/create', async (req, res) => {
+  console.log('Creating a AboutInfo...');
   try {
-    const login = req.body.userlogin;
+    const login = req.body.userLogin;
     const user = await User.findOne({ login: login });
-    if (user != null || !user.ativado) {
-      const info = await AboutInfo.findOne({ userLogin: login });
-      if (info != null) {
-        const aboutInfo = new AboutInfo({
-          userLogin: req.body.userLogin,
-          nome: req.body.nome,
-          itens: req.body.itens,
-        });
-        await aboutInfo.save();
+    if (user != null) {
+      if (user.ativado) {
+        const info = await AboutInfo.findOne({ userLogin: login });
+        if (info == null) {
+          const aboutInfo = new AboutInfo({
+            userLogin: req.body.userLogin,
+            nome: req.body.nome,
+            itens: req.body.itens,
+          });
+          await aboutInfo.save();
 
-        return res.json({ status: true, info: aboutInfo });
+          return res.json({ status: true, info: aboutInfo });
+        } else {
+          return res.json({
+            status: false,
+            message: 'Já existe usuário com essa página!',
+          });
+        }
       } else {
-        return res.json({
-          status: false,
-          message: "Já existe usuário com essa página!",
-        });
+        return res.json({ status: false, message: 'Usuário não ativado.' });
       }
     } else {
       return res.json({
         status: false,
-        message: "Usuário não cadastrado ou ativado no sistema.",
+        message: 'Usuário não cadastrado.',
       });
     }
   } catch (err) {
-    res.send("Error");
+    res.send('Error - ' + err);
   }
 });
 
 //Insere um item
-router.put("/insertItem/:id", async (req, res) => {
-  console.log("Inserting a item...");
+router.put('/insertItem/:id', async (req, res) => {
+  console.log('Inserting a item...');
   try {
     const info = await AboutInfo.findById(req.params.id);
     if (info != null) {
@@ -79,7 +83,7 @@ router.put("/insertItem/:id", async (req, res) => {
       if (!key || !value) {
         return res.json({
           status: false,
-          message: "Um dos campos chave/valor está vazio.",
+          message: 'Um dos campos chave/valor está vazio.',
         });
       }
       item = {
@@ -93,16 +97,16 @@ router.put("/insertItem/:id", async (req, res) => {
 
       return res.json({ status: true, itemAdicionado: item });
     } else {
-      return res.json({ status: false, message: "ID não encontrado." });
+      return res.json({ status: false, message: 'ID não encontrado.' });
     }
   } catch (error) {
-    return res.send("Error - " + error);
+    return res.send('Error - ' + error);
   }
 });
 
 //Atualiza alguma informação especifica.
-router.patch("/update/:id", async (req, res) => {
-  console.log("Updating a aboutInfo...");
+router.patch('/update/:id', async (req, res) => {
+  console.log('Updating a aboutInfo...');
   try {
     const info = await AboutInfo.findById(req.params.id);
     if (info != null) {
@@ -128,31 +132,31 @@ router.patch("/update/:id", async (req, res) => {
         info: info,
       });
     } else {
-      return res.json({ status: false, message: "ID não encontrado." });
+      return res.json({ status: false, message: 'ID não encontrado.' });
     }
   } catch (err) {
-    return res.send("Error - " + err);
+    return res.send('Error - ' + err);
   }
 });
 
 //Deleta uma página especifica
-router.delete("/deletePage", async (req,res) => {
-  console.log("Deleting a page...")
-  try{
-    const page = await AboutInfo.findByIdAndDelete(req.body.id)
-    if(page != null){
-      return res.json({status: true, deletedPage: page})
+router.delete('/deletePage', async (req, res) => {
+  console.log('Deleting a page...');
+  try {
+    const page = await AboutInfo.findByIdAndDelete(req.body.id);
+    if (page != null) {
+      return res.json({ status: true, deletedPage: page });
     } else {
-      return res.json({status: false, message: "Página não encontrada."})
+      return res.json({ status: false, message: 'Página não encontrada.' });
     }
-  } catch (error){
-    return res.send("Error - " + error)
+  } catch (error) {
+    return res.send('Error - ' + error);
   }
-})
+});
 
 //Delete uma info especifica.
-router.delete("/deleteItem/:userid", async (req, res) => {
-  console.log("Deleting a item.");
+router.delete('/deleteItem/:userid', async (req, res) => {
+  console.log('Deleting a item.');
   const page = await AboutInfo.findById(req.params.userid);
   if (page != null) {
     const itemId = req.body.itemid;
@@ -167,11 +171,11 @@ router.delete("/deleteItem/:userid", async (req, res) => {
 
     return res.json({
       status: true,
-      message: "Item Deletado",
+      message: 'Item Deletado',
       itemRemovido: deletedItem,
     });
   } else {
-    return res.json({ status: false, message: "Página não encontrada." });
+    return res.json({ status: false, message: 'Página não encontrada.' });
   }
 });
 
