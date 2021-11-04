@@ -118,7 +118,7 @@ router.patch('/update/:id', async (req, res) => {
         req.body.itens.forEach((reqItem) => {
           if (String(item._id) === String(reqItem.id)) {
             item.key = reqItem.key || item.key;
-            item.value = reqItem.key || item.key;
+            item.value = reqItem.value || item.value;
             algumItemModificado = true;
           }
         });
