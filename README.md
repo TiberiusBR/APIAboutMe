@@ -306,7 +306,7 @@ Exemplo de retorno de sucesso:
 	"deletedPage":  {
 		"nome":  "false",
 		"_id":  "61703ffa56e4fb27d0703162",
-		"userID":  "KaiqueGay",
+		"userID":  "Kaique",
 		"itens":  [
 			{
 			"_id":  "61703ffa56e4fb27d0703163",
@@ -320,7 +320,7 @@ Exemplo de retorno de sucesso:
 ```
 | Método | Rota | Paramêtro | Descrição                                           |
 | ------ | ---- | --------- | --------------------------------------------------- |
-| DELETE| /aboutinfo/deleteItem/:userid| BODY (itemid)| Deleta um item específico, passando o ID do item no body e o ID do usuário nos params. |
+| DELETE| /aboutinfo/deleteItem/:userlogin| BODY (itemid)| Deleta um item específico, passando o ID do item no body e o login do usuário nos params. |
 Exemplo de parâmetro:
 
 ```JSON
