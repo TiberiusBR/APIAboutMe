@@ -43,6 +43,14 @@ router.post('/create', async (req, res) => {
       if (user.ativado) {
         const info = await AboutInfo.findOne({ userLogin: login });
         if (info == null) {
+          req.body.itens.forEach((item) => {
+            if (!item.value) {
+              return res.json({
+                status: false,
+                message: 'Um dos itens está com o valor vazio.',
+              });
+            }
+          });
           const aboutInfo = new AboutInfo({
             userLogin: req.body.userLogin,
             nome: req.body.nome,
@@ -80,10 +88,10 @@ router.put('/insertItem/:id', async (req, res) => {
       const key = req.body.key;
       const value = req.body.value;
 
-      if (!key || !value) {
+      if (!value) {
         return res.json({
           status: false,
-          message: 'Um dos campos chave/valor está vazio.',
+          message: 'O campo valor está vazio.',
         });
       }
       item = {
@@ -116,6 +124,12 @@ router.patch('/update/:id', async (req, res) => {
 
       info.itens.forEach((item) => {
         req.body.itens.forEach((reqItem) => {
+          if (!reqItem.value) {
+            return res.json({
+              status: false,
+              message: 'Um dos itens está com o valor vazio.',
+            });
+          }
           if (String(item._id) === String(reqItem.id)) {
             item.key = reqItem.key || item.key;
             item.value = reqItem.value || item.value;
@@ -155,9 +169,9 @@ router.delete('/deletePage', async (req, res) => {
 });
 
 //Delete uma info especifica.
-router.delete('/deleteItem/:userid', async (req, res) => {
+router.delete('/deleteItem/:userlogin', async (req, res) => {
   console.log('Deleting a item.');
-  const page = await AboutInfo.findById(req.params.userid);
+  const page = await AboutInfo.findById(req.params.userlogin);
   if (page != null) {
     const itemId = req.body.itemid;
     var deletedItem = null;

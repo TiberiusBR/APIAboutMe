@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const app = express();
-const alienRouter = require('./routes/aliens');
 const userRouter = require('./routes/users');
 const aboutInfoRouter = require('./routes/aboutInfo');
 
@@ -20,7 +19,6 @@ con.on('open', () => {
 app.use(express.json());
 
 app.use('/users', userRouter);
-app.use('/aliens', alienRouter);
 app.use('/aboutinfo', aboutInfoRouter);
 
 app.listen(port, () => {
