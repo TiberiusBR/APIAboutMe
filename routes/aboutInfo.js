@@ -17,14 +17,22 @@ router.get('/', async (req, res) => {
 //DEBUG
 
 //Procurar uma página pelo login do usuário.
-router.get('/search/:userlogin', async (req, res) => {
+router.get('/search/:userid', async (req, res) => {
   console.log('Retrieving a Page...');
   try {
-    const login = req.params.userlogin;
-    const info = await AboutInfo.findOne({ userLogin: login });
+    const id = req.params.userid;
+    const user = await User.findById(id);
 
-    if (info != null) {
-      return res.json({ status: true, info: info });
+    if (user != null) {
+      const page = await AboutInfo.findOne({ userLogin: user.login });
+      if (page != null) {
+        return res.json({ status: true, info: page });
+      } else {
+        return res.json({
+          status: false,
+          message: 'Este usuário não possui uma página.',
+        });
+      }
     } else {
       return res.json({ status: false, message: 'Página não encontrada.' });
     }
