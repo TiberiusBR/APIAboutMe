@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const app = express();
 const userRouter = require('./routes/users');
 const aboutInfoRouter = require('./routes/aboutInfo');
+const router = express.Router();
 
 dotenv.config();
 
@@ -20,6 +21,15 @@ app.use(express.json());
 
 app.use('/users', userRouter);
 app.use('/aboutinfo', aboutInfoRouter);
+
+router.get('/', (req, res) => {
+  try {
+    res.send('AboutMe API Working');
+  } catch (err) {
+    console.log('Error! - ' + err);
+    res.send('Error.');
+  }
+});
 
 app.listen(port, () => {
   console.log('Server listening on port: ' + port);
