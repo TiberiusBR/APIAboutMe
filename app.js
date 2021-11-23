@@ -7,7 +7,7 @@ const aboutInfoRouter = require('./routes/aboutInfo');
 const cors = require('cors');
 const router = express.Router();
 
-app.use(cors);
+app.use(cors());
 
 dotenv.config();
 
