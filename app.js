@@ -4,7 +4,10 @@ const dotenv = require('dotenv');
 const app = express();
 const userRouter = require('./routes/users');
 const aboutInfoRouter = require('./routes/aboutInfo');
+const cors = require('cors');
 const router = express.Router();
+
+app.use(cors);
 
 dotenv.config();
 
